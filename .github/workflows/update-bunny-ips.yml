@@ -38,12 +38,15 @@ jobs:
             echo "No changes to commit."
           fi
 
+      - name: Set Release Date
+        run: echo "RELEASE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
       - name: Create Release
         if: steps.commit.outputs.changed == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ format('v{0}', format('{0:yyyy-MM-dd}', github.event.repository.updated_at)) }}
-          name: Bunny CDN IP Update - ${{ format('{0:yyyy-MM-dd}', github.event.repository.updated_at) }}
+          tag_name: v${{ env.RELEASE_DATE }}
+          name: Bunny CDN IP Update - ${{ env.RELEASE_DATE }}
           body: |
             Automatic daily update of Bunny CDN edge server IP lists.
 
