@@ -13,12 +13,12 @@ Ready for `set_real_ip_from` in Nginx, trusted proxies in Caddy, firewalls, and 
 
 ## 📁 Files
 
-| File                  | Description                              | Format          |
-|-----------------------|------------------------------------------|-----------------|
-| `bunny-ipv4.txt`      | All Bunny CDN IPv4 addresses             | One IP per line |
-| `bunny-ipv6.txt`      | All Bunny CDN IPv6 addresses             | One IP per line |
-| `bunny-all.txt`       | Combined IPv4 + IPv6                     | One IP per line |
-| `bunny-real-ip.conf`  | Ready-to-use Nginx `set_real_ip_from`    | Nginx config    |
+| File                  | Description                                   | Format              |
+|-----------------------|-----------------------------------------------|---------------------|
+| `bunny-ipv4.txt`      | All Bunny CDN IPv4 addresses                  | One IP per line     |
+| `bunny-ipv6.txt`      | All Bunny CDN IPv6 addresses                  | One IP per line     |
+| `bunny-all.txt`       | Combined IPv4 + IPv6                          | One IP per line     |
+| `bunny-real-ip.conf`  | Ready-to-use for Nginx `set_real_ip_from`     | Nginx config        |
 
 ## 🚀 Quick Download (Raw)
 
