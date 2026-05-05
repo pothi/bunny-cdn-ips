@@ -1,0 +1,63 @@
+name: Update Bunny CDN IP Lists
+
+on:
+  schedule:
+    - cron: '3 3 * * *'      # Daily at 3:03 AM UTC
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Update IP lists
+        run: ./update-ips.sh
+
+      - name: Commit and push if changed
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if [[ -n $(git status --porcelain) ]]; then
+            git add bunny-*.txt bunny-real-ip.conf .last-hash
+            git commit -m "chore: update Bunny CDN IP lists (auto)"
+            git push
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Changes committed and pushed."
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No changes to commit."
+          fi
+
+      - name: Create Release
+        if: steps.commit.outputs.changed == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ format('v{0}', format('{0:yyyy-MM-dd}', github.event.repository.updated_at)) }}
+          name: Bunny CDN IP Update - ${{ format('{0:yyyy-MM-dd}', github.event.repository.updated_at) }}
+          body: |
+            Automatic daily update of Bunny CDN edge server IP lists.
+
+            ### Summary
+            - IPv4: $(wc -l < bunny-ipv4.txt) addresses
+            - IPv6: $(wc -l < bunny-ipv6.txt) addresses
+            - Total: $(wc -l < bunny-all.txt) addresses
+
+            New in this release:
+            - `bunny-real-ip.conf` – Ready-to-use for `set_real_ip_from`
+          files: |
+            bunny-ipv4.txt
+            bunny-ipv6.txt
+            bunny-all.txt
+            bunny-real-ip.conf
+          draft: false
+          prerelease: false
