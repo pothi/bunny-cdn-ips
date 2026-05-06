@@ -2,8 +2,8 @@ name: Update Bunny CDN IP Lists
 
 on:
   schedule:
-    - cron: '3 3 * * *'      # Daily at 3:03 AM UTC
-  workflow_dispatch:
+    - cron: '0 3 * * *'      # Daily at 3:00 AM UTC
+  workflow_dispatch:         # Allow manual trigger
 
 jobs:
   update:
@@ -20,6 +20,13 @@ jobs:
 
       - name: Update IP lists
         run: ./update-ips.sh
+
+      - name: Get Stats
+        id: stats
+        run: |
+          echo "ipv4=$(wc -l < bunny-ipv4.txt | xargs)" >> $GITHUB_OUTPUT
+          echo "ipv6=$(wc -l < bunny-ipv6.txt | xargs)" >> $GITHUB_OUTPUT
+          echo "total=$(wc -l < bunny-all.txt | xargs)" >> $GITHUB_OUTPUT
 
       - name: Commit and push if changed
         id: commit
@@ -51,9 +58,9 @@ jobs:
             Automatic daily update of Bunny CDN edge server IP lists.
 
             ### Summary
-            - IPv4: $(wc -l < bunny-ipv4.txt) addresses
-            - IPv6: $(wc -l < bunny-ipv6.txt) addresses
-            - Total: $(wc -l < bunny-all.txt) addresses
+            - IPv4: ${{ steps.stats.outputs.ipv4 }} addresses
+            - IPv6: ${{ steps.stats.outputs.ipv6 }} addresses
+            - Total: ${{ steps.stats.outputs.total }} addresses
 
             New in this release:
             - `bunny-real-ip.conf` – Ready-to-use for `set_real_ip_from`
