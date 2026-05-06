@@ -14,10 +14,13 @@ jq -r '.[]' | sort -V > bunny-ipv6.txt
 # Combined
 cat bunny-ipv4.txt bunny-ipv6.txt | sort -V > bunny-all.txt
 
-# Generate Nginx real_ip configuration
-echo "# Bunny CDN Real IP configuration" > bunny-real-ip.conf
-echo "# Auto-generated on $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> bunny-real-ip.conf
-echo "" >> bunny-real-ip.conf
+# Generate Nginx real_ip configuration (stable version)
+cat > bunny-real-ip.conf << 'EOF'
+# Bunny CDN Real IP configuration
+# Auto-generated for set_real_ip_from
+# Last updated via GitHub Actions - see repo for generation date
+
+EOF
 
 while IFS= read -r ip; do
     if [ -n "$ip" ]; then
@@ -25,9 +28,11 @@ while IFS= read -r ip; do
     fi
 done < bunny-all.txt
 
-echo "" >> bunny-real-ip.conf
-echo "real_ip_header X-Real-IP;" >> bunny-real-ip.conf
-echo "real_ip_recursive on;" >> bunny-real-ip.conf
+cat >> bunny-real-ip.conf << 'EOF'
+
+real_ip_header X-Real-IP;
+real_ip_recursive on;
+EOF
 
 # Hash comparison to avoid unnecessary commits
 if [ -f .last-hash ]; then
