@@ -5,9 +5,9 @@
 Ready for `set_real_ip_from` in Nginx, trusted proxies in Caddy, firewalls, and more.
 
 ## 📊 Current Stats
-- **IPv4**: ~480 addresses
-- **IPv6**: ~280 addresses
-- **Total**: ~760 addresses
+- **IPv4**: ~600 addresses
+- **IPv6**: ~350 addresses
+- **Total**: ~950 addresses
 
 **Last updated**: Automatically every day via GitHub Actions.
 
